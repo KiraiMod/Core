@@ -3,15 +3,10 @@
 using BepInEx;
 using BepInEx.IL2CPP;
 using BepInEx.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KiraiMod.Core
 {
-    [BepInPlugin("me.kiraihooks.KiraiMod.Core", "KM.Core", "latest")]
+    [BepInPlugin("me.kiraihooks.KiraiMod.Core", "KM.Core", "0.0.0")]
     public class Plugin : BasePlugin
     {
         internal static ManualLogSource Logger;
