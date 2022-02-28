@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace KiraiMod.Core
 {
@@ -36,5 +37,9 @@ namespace KiraiMod.Core
             handler(null, null);
             return handler;
         }
+
+        public static void On(this Toggle toggle, Action<bool> callback) => toggle.onValueChanged.AddListener(callback);
+        public static void On(this Button button, Action callback) => button.onClick.AddListener(callback);
+        public static void On(this Slider slider, Action<float> callback) => slider.onValueChanged.AddListener(callback);
     }
 }
