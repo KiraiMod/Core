@@ -1,8 +1,10 @@
-﻿using System;
+﻿using BepInEx.Configuration;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace KiraiMod.Core
@@ -41,5 +43,7 @@ namespace KiraiMod.Core
         public static void On(this Toggle toggle, Action<bool> callback) => toggle.onValueChanged.AddListener(callback);
         public static void On(this Button button, Action callback) => button.onClick.AddListener(callback);
         public static void On(this Slider slider, Action<float> callback) => slider.onValueChanged.AddListener(callback);
+
+        public static void Register(this ConfigEntry<Key[]> entry, Action OnClick) => Managers.KeybindManager.RegisterKeybind(entry, OnClick);
     }
 }
