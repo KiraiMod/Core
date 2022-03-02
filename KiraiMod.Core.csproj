@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat.BepInEx\BepInEx\core\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx.Core">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat.BepInEx\BepInEx\core\BepInEx.Core.dll</HintPath>
     </Reference>
@@ -66,12 +70,16 @@
     <Reference Include="VRCCore-Standalone">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat.BepInEx\BepInEx\unhollowed\VRCCore-Standalone.dll</HintPath>
     </Reference>
+    <Reference Include="VRCSDKBase">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat\MelonLoader\Managed\VRCSDKBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Managers\KeybindManager.cs" />
+    <Compile Include="Types\Player.cs" />
     <Compile Include="Types\RoomManager.cs" />
     <Compile Include="Utils\CoAsync.cs" />
     <Compile Include="Utils\Coroutine.cs" />

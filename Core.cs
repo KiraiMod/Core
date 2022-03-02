@@ -6,10 +6,12 @@ using BepInEx.Logging;
 
 namespace KiraiMod.Core
 {
-    [BepInPlugin("me.kiraihooks.KiraiMod.Core", "KM.Core", "0.0.0")]
+    [BepInPlugin(GUID, "KM.Core", "0.0.0")]
     [BepInDependency("me.kiraihooks.KiraiMod.Loader", BepInDependency.DependencyFlags.SoftDependency)]
     public class Plugin : BasePlugin
     {
+        public const string GUID = "me.kiraihooks.KiraiMod.Core";
+
         internal static ManualLogSource Logger;
 
         public override void Load()
