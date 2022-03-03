@@ -45,6 +45,9 @@
     <Reference Include="Il2Cppmscorlib">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat\MelonLoader\Managed\Il2Cppmscorlib.dll</HintPath>
     </Reference>
+    <Reference Include="Photon-DotNet">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat.BepInEx\BepInEx\unhollowed\Photon-DotNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -81,6 +84,7 @@
     <Compile Include="Managers\KeybindManager.cs" />
     <Compile Include="Types\Player.cs" />
     <Compile Include="Types\RoomManager.cs" />
+    <Compile Include="Types\VRCNetworkingClient.cs" />
     <Compile Include="Utils\CoAsync.cs" />
     <Compile Include="Utils\Coroutine.cs" />
   </ItemGroup>
