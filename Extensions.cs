@@ -23,7 +23,7 @@ namespace KiraiMod.Core
         // System.Type extensions
         public static void Initialize(this Type type) => System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
         public static void LogAs(this Type t, string name) => Plugin.Logger.Log(t == null ? BepInEx.Logging.LogLevel.Warning : BepInEx.Logging.LogLevel.Debug, $"{name}={t?.Name}");
-        public static void LogAs(this MethodInfo t, string name) => Plugin.Logger.Log(t == null ? BepInEx.Logging.LogLevel.Warning : BepInEx.Logging.LogLevel.Debug, $"{name}={t?.Name}");
+        public static void LogAs(this MemberInfo t, string name) => Plugin.Logger.Log(t == null ? BepInEx.Logging.LogLevel.Warning : BepInEx.Logging.LogLevel.Debug, $"{name}={t?.Name}");
 
         // System.Reflection extensions
         public static HarmonyMethod ToHM(this MethodInfo minfo) => minfo is null ? null : new HarmonyMethod(minfo);

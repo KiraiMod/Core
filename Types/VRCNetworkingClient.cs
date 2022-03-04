@@ -39,8 +39,8 @@ namespace KiraiMod.Core.Types
                 }).ElementAt(0);
 
             Type.LogAs("VRCNetworkingClient");
-            m_OnEvent.LogAs("VRCNetworkingClient.OnEvent");
-            m_OpRaiseEvent.LogAs("VRCNetworkingClient.OpRaiseEvent");
+            m_OnEvent.LogAs(".OnEvent");
+            m_OpRaiseEvent.LogAs(".OpRaiseEvent");
         }
     }
 }
