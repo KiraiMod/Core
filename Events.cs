@@ -42,7 +42,7 @@ namespace KiraiMod.Core
         {
             public const BindingFlags PrivateStatic = BindingFlags.NonPublic | BindingFlags.Static;
 
-            public static Assembly AssemblyCSharp = AppDomain.CurrentDomain.GetAssemblies().First(f => f.GetName().Name == "Assembly-CSharp");
+            public static Assembly AssemblyCSharp = AppDomain.CurrentDomain.GetAssemblies().First(x => x.GetName().Name == "Assembly-CSharp");
             public static HarmonyLib.Harmony Harmony = new(Plugin.GUID);
 
             static Hooks()

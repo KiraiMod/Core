@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 
-namespace KiraiMod.Managers
+namespace KiraiMod.Core.Managers
 {
     public static class KeybindManager
     {

@@ -67,6 +67,7 @@
     <Reference Include="UnityEngine.InputModule">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat.BepInEx\BepInEx\unhollowed\UnityEngine.InputModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="UnityEngine.UI">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat.BepInEx\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -82,11 +83,13 @@
     <Compile Include="Events.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Managers\KeybindManager.cs" />
+    <Compile Include="Components\ScreenLogger.cs" />
     <Compile Include="Types\Player.cs" />
     <Compile Include="Types\RoomManager.cs" />
     <Compile Include="Types\VRCNetworkingClient.cs" />
     <Compile Include="Utils\CoAsync.cs" />
     <Compile Include="Utils\Coroutine.cs" />
+    <Compile Include="Utils\Misc.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

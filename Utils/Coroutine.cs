@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace KiraiMod.Core.Utils
 {
+    // from MelonLoader
     public static class Coroutine
     {
         private static readonly CoroutineSupport support;
