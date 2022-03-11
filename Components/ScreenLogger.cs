@@ -5,12 +5,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using VRC.SDKBase;
 
 namespace KiraiMod.Core.Components
 {
     public static class ScreenLogger
     {
         public static ConfigEntry<bool> enabled = Plugin.Configuration.Bind("Logging.Screen", "Enabled", true, "Should the on screen logger be created and used");
+        public static ConfigEntry<bool> hightlightNames = Plugin.Configuration.Bind("Logging.Screen", "HightlightNames", true, "Should usernames get colored");
         public static ConfigEntry<LogLevel> level = Plugin.Configuration.Bind("Logging.Screen", "LogLevel", LogLevel.Message, "The levels that the logger should listen to");
 
         public static Listener listener;
@@ -29,10 +31,7 @@ namespace KiraiMod.Core.Components
             }
         }
 
-        static ScreenLogger()
-        {
-            Events.UIManagerLoaded += UILoaded;
-        }
+        static ScreenLogger() => Events.UIManagerLoaded += UILoaded;
 
         private static void UILoaded() =>
             enabled.SettingChanged += ((EventHandler)((sender, args) => {
@@ -90,6 +89,10 @@ namespace KiraiMod.Core.Components
                     Console.WriteLine("ignore message due to wrong thread");
                     return;
                 }
+
+                if (hightlightNames.Value)
+                    foreach (VRCPlayerApi player in VRCPlayerApi.AllPlayers)
+                        message = message.Replace(player.displayName, $"<color=#ccf>{player.displayName}</color>");
 
                 Lines.Enqueue(message);
                 Log.text = string.Join("\n", Lines);
