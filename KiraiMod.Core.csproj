@@ -90,6 +90,7 @@
     <Compile Include="Components\ScreenLogger.cs" />
     <Compile Include="Types\Player.cs" />
     <Compile Include="Types\RoomManager.cs" />
+    <Compile Include="Types\UserSelectionManager.cs" />
     <Compile Include="Types\VRCNetworkingClient.cs" />
     <Compile Include="Utils\CoAsync.cs" />
     <Compile Include="Utils\Coroutine.cs" />
@@ -97,6 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TypeScanner\TypeScanner.csproj">
+      <Project>{af1f6ec2-09da-4ec4-9be0-d3418fdb5429}</Project>
+      <Name>TypeScanner</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
