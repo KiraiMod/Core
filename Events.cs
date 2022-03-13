@@ -14,6 +14,7 @@ namespace KiraiMod.Core
         public static event Action ApplicationStart; // scene 0
         public static event Action UIManagerLoaded; // scene 1
         public static event Action<Scene> WorldLoaded; // scene -1
+        public static event Action<Scene> WorldUnloaded; // scene -1
         public static event Action Update;
         public static event Action<Types.Player> PlayerJoined;
         public static event Action<Types.Player> PlayerLeft;
@@ -21,6 +22,7 @@ namespace KiraiMod.Core
         static Events()
         {
             SceneManager.add_sceneLoaded((UnityAction<Scene, LoadSceneMode>)HookSceneLoaded);
+            SceneManager.add_sceneUnloaded((UnityAction<Scene>)HookSceneUnloaded);
             IL2CPPChainloader.AddUnityComponent<MonoHelper>();
 
             typeof(Hooks).Initialize();
@@ -36,6 +38,13 @@ namespace KiraiMod.Core
                 ApplicationStart?.Invoke();
             else if (scene.buildIndex == 1)
                 UIManagerLoaded?.Invoke();
+        }
+
+        public static void HookSceneUnloaded(Scene scene)
+        {
+            if (scene == null) return;
+            if (scene.buildIndex == -1)
+                WorldUnloaded?.Invoke(scene);
         }
 
         internal static class Hooks
