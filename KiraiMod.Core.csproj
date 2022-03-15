@@ -91,6 +91,7 @@
     <Compile Include="Types\Player.cs" />
     <Compile Include="Types\RoomManager.cs" />
     <Compile Include="Types\UserSelectionManager.cs" />
+    <Compile Include="Types\USpeaker.cs" />
     <Compile Include="Types\VRCMotionState.cs" />
     <Compile Include="Types\VRCNetworkingClient.cs" />
     <Compile Include="Utils\CoAsync.cs" />
