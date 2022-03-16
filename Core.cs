@@ -21,9 +21,18 @@ namespace KiraiMod.Core
             Logger = Log;
             Configuration = Config;
 
+            // if you know a better way to initialize Assembly-CSharp, please tell me
+            try { LoadAssemblyCSharp.Somehow(); }
+            catch { }
+
             typeof(Utils.Misc).Initialize();
             typeof(Managers.KeybindManager).Initialize();
             typeof(Components.ScreenLogger).Initialize();
+        }
+
+        private static class LoadAssemblyCSharp
+        {
+            public static void Somehow() => _ = OVRLipSync.field_Public_Static_Int32_0;
         }
     }
 }
