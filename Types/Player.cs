@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using TypeScanner.Types;
 using UnityEngine;
 using VRC.Core;
 using VRC.SDKBase;
@@ -10,16 +11,19 @@ namespace KiraiMod.Core.Types
 {
     public class Player
     {
-        public static readonly Type Type = Events.Hooks.AssemblyCSharp.GetExportedTypes()
-            .Where(x => x.BaseType == typeof(MonoBehaviour))
-            .Where(x => x.GetConstructors().Length == 2)
-            .Where(x => x.GetMethod("OnNetworkReady") != null)
-            .Where(f => {
-                var props = f.GetProperties();
-                return props.Any(f => f.PropertyType == typeof(VRCPlayerApi))
-                    && props.Any(f => f.PropertyType == typeof(APIUser));
-            })
-            .FirstOrDefault();
+        public static readonly Type Type = ClassDef.Create("VRC.Player")
+            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .DerivesFrom<MonoBehaviour>()
+            .ConstructorCount(2)
+            .WithMethods(
+                MethodDef.Create().WithName("OnNetworkReady")
+            )
+            .WithProperties(
+                PropertyDef.Create().WithType<VRCPlayerApi>(),
+                PropertyDef.Create().WithType<APIUser>()
+            )
+            .Setup()
+            .Resolved;
 
         private static readonly PropertyInfo m_APIUser = Type?.GetProperties().FirstOrDefault(f => f.PropertyType == typeof(APIUser));
         private static readonly PropertyInfo m_VRCPlayerApi = Type?.GetProperties().FirstOrDefault(f => f.PropertyType == typeof(VRCPlayerApi));
