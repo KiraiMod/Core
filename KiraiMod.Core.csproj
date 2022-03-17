@@ -94,6 +94,7 @@
     <Compile Include="Types\USpeaker.cs" />
     <Compile Include="Types\VRCMotionState.cs" />
     <Compile Include="Types\VRCNetworkingClient.cs" />
+    <Compile Include="Utils\Bound.cs" />
     <Compile Include="Utils\CoAsync.cs" />
     <Compile Include="Utils\Coroutine.cs" />
     <Compile Include="Utils\Misc.cs" />

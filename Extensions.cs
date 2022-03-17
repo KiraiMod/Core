@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using HarmonyLib;
+using KiraiMod.Core.Utils;
 using System;
 using System.Collections;
 using System.Reflection;
@@ -39,13 +40,13 @@ namespace KiraiMod.Core
         }
 
         // Coroutine extensions
-        public static Coroutine Start(this IEnumerator enumerator) => Utils.Coroutine.Start(enumerator);
-        public static void Stop(this Coroutine coroutine) => Utils.Coroutine.Stop(coroutine);
+        public static UnityEngine.Coroutine Start(this IEnumerator enumerator) => Utils.Coroutine.Start(enumerator);
+        public static void Stop(this UnityEngine.Coroutine coroutine) => Utils.Coroutine.Stop(coroutine);
 
         // UnityEngine.Events extensions
-        public static void On(this Toggle toggle, Action<bool> callback) => toggle.onValueChanged.AddListener(callback);
-        public static void On(this Button button, Action callback) => button.onClick.AddListener(callback);
-        public static void On(this Slider slider, Action<float> callback) => slider.onValueChanged.AddListener(callback);
+        public static Toggle On(this Toggle toggle, Action<bool> callback) { toggle.onValueChanged.AddListener(callback); return toggle; }
+        public static Button On(this Button button, Action callback) { button.onClick.AddListener(callback); return button; }
+        public static Slider On(this Slider slider, Action<float> callback) { slider.onValueChanged.AddListener(callback); return slider; }
         public static EventTrigger.Entry Setup(this EventTrigger.Entry entry, EventTriggerType type, UnityAction<BaseEventData> callback)
         {
             entry.eventID = type;
@@ -55,5 +56,13 @@ namespace KiraiMod.Core
 
         // Custom extensions
         public static void Register(this ConfigEntry<Key[]> entry, Action OnClick) => Managers.KeybindManager.RegisterKeybind(entry, OnClick);
+
+        // Utils.Bound
+        public static Bound<bool> Bind(this Bound<bool> bound, Toggle component)
+        {
+            component.On(value => bound.Value = value);
+            bound.ValueChanged += value => component.Set(value, false);
+            return bound;
+        }
     }
 }
