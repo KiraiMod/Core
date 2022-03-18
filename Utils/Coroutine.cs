@@ -1,6 +1,7 @@
 ﻿using BepInEx.IL2CPP;
 using System;
 using System.Collections;
+using UnhollowerBaseLib.Attributes;
 using UnhollowerRuntimeLib;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace KiraiMod.Core.Utils
         static Coroutine()
         {
             support = IL2CPPChainloader.AddUnityComponent<CoroutineSupport>();
-            ClassInjector.RegisterTypeInIl2CppWithInterfaces<Wrapper>(typeof(Il2CppSystem.Collections.IEnumerator));
+            ClassInjector.RegisterTypeInIl2Cpp<Wrapper>();
         }
 
         public static UnityEngine.Coroutine Start(IEnumerator coroutine) => support.StartCoroutine(new Il2CppSystem.Collections.IEnumerator(new Wrapper(coroutine).Pointer));
@@ -26,6 +27,7 @@ namespace KiraiMod.Core.Utils
             public CoroutineSupport(IntPtr ptr) : base(ptr) {}
         }
 
+        [Il2CppImplements(typeof(Il2CppSystem.Collections.IEnumerator))]
         private class Wrapper : Il2CppSystem.Object
         {
             private readonly IEnumerator enumerator;
