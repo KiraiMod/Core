@@ -3,6 +3,7 @@ using HarmonyLib;
 using KiraiMod.Core.Utils;
 using System;
 using System.Collections;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Events;
@@ -25,6 +26,7 @@ namespace KiraiMod.Core
         public static void Initialize(this Type type) => System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
         public static void LogAs(this Type t, string name) => Plugin.Logger.Log(t == null ? BepInEx.Logging.LogLevel.Warning : BepInEx.Logging.LogLevel.Debug, $"{name}={t?.Name}");
         public static void LogAs(this MemberInfo t, string name) => Plugin.Logger.Log(t == null ? BepInEx.Logging.LogLevel.Warning : BepInEx.Logging.LogLevel.Debug, $"{name}={t?.Name}");
+        public static PropertyInfo Singleton(this Type t) => t.GetProperties().FirstOrDefault(x => x.PropertyType == t);
 
         // System.Reflection extensions
         public static HarmonyMethod ToHM(this MethodInfo minfo) => minfo is null ? null : new HarmonyMethod(minfo);
