@@ -1,5 +1,6 @@
 ﻿using BepInEx.IL2CPP;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnhollowerRuntimeLib;
@@ -33,18 +34,18 @@ namespace KiraiMod.Core
             Plugin.Logger.LogInfo($"Loading scene {scene.buildIndex}: {scene.name}");
 
             if (scene.buildIndex == -1)
-                WorldLoaded?.Invoke(scene);
+                WorldLoaded?.StableInvoke(scene);
             else if (scene.buildIndex == 0)
-                ApplicationStart?.Invoke();
+                ApplicationStart?.StableInvoke();
             else if (scene.buildIndex == 1)
-                UIManagerLoaded?.Invoke();
+                UIManagerLoaded?.StableInvoke();
         }
 
         public static void HookSceneUnloaded(Scene scene)
         {
             if (scene == null) return;
             if (scene.buildIndex == -1)
-                WorldUnloaded?.Invoke(scene);
+                WorldUnloaded?.StableInvoke(scene);
         }
 
         internal static class Hooks
@@ -60,8 +61,8 @@ namespace KiraiMod.Core
                 Harmony.Patch(Types.Player.Type.GetMethod("OnDestroy"), typeof(Hooks).GetMethod(nameof(OnPlayerLeft), PrivateStatic).ToHM());
             }
 
-            private static void OnPlayerJoined(MonoBehaviour __instance) => PlayerJoined?.Invoke(new Types.Player(__instance));
-            private static void OnPlayerLeft(MonoBehaviour __instance) => PlayerLeft?.Invoke(new Types.Player(__instance));
+            private static void OnPlayerJoined(MonoBehaviour __instance) => PlayerJoined?.StableInvoke(new Types.Player(__instance));
+            private static void OnPlayerLeft(MonoBehaviour __instance) => PlayerLeft?.StableInvoke(new Types.Player(__instance));
         }
 
         private class MonoHelper : MonoBehaviour
@@ -69,7 +70,7 @@ namespace KiraiMod.Core
             public MonoHelper() : base(ClassInjector.DerivedConstructorPointer<MonoHelper>()) => ClassInjector.DerivedConstructorBody(this);
             public MonoHelper(IntPtr ptr) : base(ptr) {}
 
-            public void Update() => Events.Update?.Invoke();
+            public void Update() => Events.Update?.StableInvoke();
         }
     }
 }

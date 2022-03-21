@@ -22,6 +22,15 @@ namespace KiraiMod.Core
             return handler;
         }
 
+        public static void ForEach<T>(this System.Collections.Generic.IEnumerable<T> arr, Action<T> func)
+        {
+            foreach (T elem in arr)
+                func(elem);
+        }
+
+        public static void StableInvoke(this Action action) => action.GetInvocationList().Cast<Action>().ForEach(sub => { try { sub(); } catch (Exception ex) { Plugin.Logger.LogError(ex); } });
+        public static void StableInvoke<T>(this Action<T> action, T value) => action.GetInvocationList().Cast<Action<T>>().ForEach(sub => { try { sub(value); } catch (Exception ex) { Plugin.Logger.LogError(ex); } });
+
         // System.Type extensions
         public static void Initialize(this Type type) => System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
         public static void LogAs(this Type t, string name) => Plugin.Logger.Log(t == null ? BepInEx.Logging.LogLevel.Warning : BepInEx.Logging.LogLevel.Debug, $"{name}={t?.Name}");
