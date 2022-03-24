@@ -50,6 +50,9 @@
 		<Reference Include="UnityEngine.UI">
 			<HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat.BepInEx\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
 		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+		  <HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat.BepInEx\BepInEx\unhollowed\UnityEngine.UIModule.dll</HintPath>
+		</Reference>
 		<Reference Include="VRCCore-Standalone">
 			<HintPath>C:\Program Files (x86)\Steam\steamapps\common\VRChat.BepInEx\BepInEx\unhollowed\VRCCore-Standalone.dll</HintPath>
 		</Reference>

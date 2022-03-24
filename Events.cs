@@ -1,5 +1,6 @@
 ﻿using BepInEx.IL2CPP;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +8,7 @@ using UnhollowerRuntimeLib;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using VRC.Core;
 
 namespace KiraiMod.Core
 {
@@ -19,6 +21,7 @@ namespace KiraiMod.Core
         public static event Action Update;
         public static event Action<Types.Player> PlayerJoined;
         public static event Action<Types.Player> PlayerLeft;
+        public static event Action<ApiWorldInstance> WorldInstanceLoaded;
 
         static Events()
         {
@@ -27,9 +30,11 @@ namespace KiraiMod.Core
             IL2CPPChainloader.AddUnityComponent<MonoHelper>();
 
             typeof(Hooks).Initialize();
+
+            WorldLoaded += scene => WaitForInstance().Start();
         }
 
-        public static void HookSceneLoaded(Scene scene, LoadSceneMode mode)
+        private static void HookSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             Plugin.Logger.LogInfo($"Loading scene {scene.buildIndex}: {scene.name}");
 
@@ -41,11 +46,20 @@ namespace KiraiMod.Core
                 UIManagerLoaded?.StableInvoke();
         }
 
-        public static void HookSceneUnloaded(Scene scene)
+        private static void HookSceneUnloaded(Scene scene)
         {
             if (scene == null) return;
             if (scene.buildIndex == -1)
                 WorldUnloaded?.StableInvoke(scene);
+        }
+
+        private static IEnumerator WaitForInstance()
+        {
+            ApiWorldInstance instance;
+            while ((instance = Types.RoomManager.GetCurrentWorld()) == null)
+                yield return null;
+
+            WorldInstanceLoaded?.StableInvoke(instance);
         }
 
         internal static class Hooks

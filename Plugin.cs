@@ -8,7 +8,7 @@ using BepInEx.Logging;
 namespace KiraiMod.Core
 {
     [BepInPlugin(GUID, "KM.Core", "0.0.0")]
-    [BepInDependency("me.kiraihooks.KiraiMod.Loader", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(TypeScanner.TypeScanner.GUID, BepInDependency.DependencyFlags.SoftDependency)]
     public class Plugin : BasePlugin
     {
         public const string GUID = "me.kiraihooks.KiraiMod.Core";
@@ -23,7 +23,7 @@ namespace KiraiMod.Core
 
             // if you know a better way to initialize Assembly-CSharp, please tell me
             try { LoadAssemblyCSharp.Somehow(); }
-            catch { }
+            catch { Log.LogWarning("Failed to load Assembly-CSharp manually"); }
 
             typeof(Utils.Misc).Initialize();
             typeof(Managers.KeybindManager).Initialize();
