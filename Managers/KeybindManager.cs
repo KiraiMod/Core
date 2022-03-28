@@ -33,7 +33,7 @@ namespace KiraiMod.Core.Managers
             {
                 int kc = 0;
                 foreach (Key key in bind.keys)
-                    if (kb.get_Item(key).isPressed)
+                    if (kb[key].isPressed)
                         kc++;
 
                 if (bind.previous)
