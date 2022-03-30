@@ -22,11 +22,8 @@ namespace KiraiMod.Core
             return handler;
         }
 
-        public static void ForEach<T>(this System.Collections.Generic.IEnumerable<T> arr, Action<T> func)
-        {
-            foreach (T elem in arr)
-                func(elem);
-        }
+        public static void ForEach<T>(this System.Collections.Generic.IEnumerable<T> arr, Action<T> func) { foreach (T elem in arr) func(elem); }
+        public static T Pop<T>(this System.Collections.Generic.List<T> arr) { T elem = arr[^1]; arr.RemoveAt(arr.Count - 1); return elem; }
 
         public static void StableInvoke(this Action action) => action.GetInvocationList().Cast<Action>().ForEach(sub => { try { sub(); } catch (Exception ex) { Plugin.Logger.LogError(ex); } });
         public static void StableInvoke<T>(this Action<T> action, T value) => action.GetInvocationList().Cast<Action<T>>().ForEach(sub => { try { sub(value); } catch (Exception ex) { Plugin.Logger.LogError(ex); } });
@@ -49,6 +46,12 @@ namespace KiraiMod.Core
             UnityEngine.Object.DontDestroyOnLoad(go);
             return go;
         }
+
+        public static Vector2 AddX(this Vector2 vec, float value) { vec.x += value; return vec; }
+        public static Vector2 AddY(this Vector2 vec, float value) { vec.y += value; return vec; }
+        public static Vector3 AddX(this Vector3 vec, float value) { vec.x += value; return vec; }
+        public static Vector3 AddY(this Vector3 vec, float value) { vec.y += value; return vec; }
+        public static Vector3 AddZ(this Vector3 vec, float value) { vec.z += value; return vec; }
 
         // Coroutine extensions
         public static UnityEngine.Coroutine Start(this IEnumerator enumerator) => Utils.Coroutine.Start(enumerator);

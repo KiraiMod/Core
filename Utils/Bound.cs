@@ -7,6 +7,9 @@ namespace KiraiMod.Core.Utils
     {
         public event Action<T> ValueChanged;
 
+        public Bound() { }
+        public Bound(T value) => _value = value;
+
         public T _value;
         public T Value
         {
@@ -32,5 +35,8 @@ namespace KiraiMod.Core.Utils
             Value = value;
             return this;
         }
+
+        [Obsolete("Please read from _value directly")]
+        public static implicit operator T(Bound<T> bound) => bound._value;
     }
 }
