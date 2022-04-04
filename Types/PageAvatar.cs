@@ -8,7 +8,7 @@ namespace KiraiMod.Core.Types
     public static class PageAvatar
     {
         public static Type Type = ClassDef.Create("PageAvatar")
-            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .FromAssembly(Utils.Misc.AssemblyCSharp)
             .ConstructorCount(2)
             .WithMethods(
                 MethodDef.Create().WithName("ChangeToSelectedAvatar")

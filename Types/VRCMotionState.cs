@@ -7,7 +7,7 @@ namespace KiraiMod.Core.Types
     public static class VRCMotionState
     {
         public static Type Type = ClassDef.Create("VRCMotionState")
-            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .FromAssembly(Utils.Misc.AssemblyCSharp)
             .DerivesFrom<MonoBehaviour>()
             .WithMethods(
                 MethodDef.Create().WithName("Awake"),

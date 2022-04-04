@@ -11,7 +11,7 @@ namespace KiraiMod.Core.Types
     public class Player
     {
         public static readonly Type Type = ClassDef.Create("VRC.Player")
-            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .FromAssembly(Utils.Misc.AssemblyCSharp)
             .DerivesFrom<MonoBehaviour>()
             .ConstructorCount(2)
             .WithMethods(

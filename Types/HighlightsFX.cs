@@ -9,7 +9,7 @@ namespace KiraiMod.Core.Types
     public static class HighlightsFX
     {
         public static Type Type = ClassDef.Create("HighlightsFX")
-            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .FromAssembly(Utils.Misc.AssemblyCSharp)
             .ConstructorCount(2)
             .WithMethods(
                 MethodDef.Create().WithName("Awake"),

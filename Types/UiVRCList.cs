@@ -6,7 +6,7 @@ namespace KiraiMod.Core.Types
     public static class UiVRCList
     {
         public static Type Type = ClassDef.Create(nameof(UiVRCList))
-            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .FromAssembly(Utils.Misc.AssemblyCSharp)
             .DerivesFrom<UnityEngine.MonoBehaviour>()
             .WithMethods(
                 MethodDef.Create().WithName("ToggleExtend")

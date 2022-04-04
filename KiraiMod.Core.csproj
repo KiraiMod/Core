@@ -6,6 +6,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove=".git" />
+	  <None Remove=".gitignore" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\TypeScanner\TypeScanner.csproj" />
 	</ItemGroup>
 

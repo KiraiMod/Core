@@ -8,7 +8,7 @@ namespace KiraiMod.Core.Types
     {
         // this looks like a really fragile signature
         public static Type Type = ClassDef.Create("USpeaker")
-            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .FromAssembly(Utils.Misc.AssemblyCSharp)
             .DerivesFrom<MonoBehaviour>()
             .ConstructorCount(2)
             .WithMethods(

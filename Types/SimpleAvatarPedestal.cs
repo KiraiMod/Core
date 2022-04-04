@@ -7,7 +7,7 @@ namespace KiraiMod.Core.Types
     public static class SimpleAvatarPedestal
     {
         public static Type Type = ClassDef.Create(nameof(SimpleAvatarPedestal))
-            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .FromAssembly(Utils.Misc.AssemblyCSharp)
             .DerivesFrom<MonoBehaviour>()
             .WithMethods(
                 MethodDef.Create().WithName("LateUpdate"),

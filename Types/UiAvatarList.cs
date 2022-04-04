@@ -6,7 +6,7 @@ namespace KiraiMod.Core.Types
     public static class UiAvatarList
     {
         public static Type Type = ClassDef.Create("UiAvatarList")
-            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .FromAssembly(Utils.Misc.AssemblyCSharp)
             .DerivesFrom(UiVRCList.Type)
             .Setup()
             .Resolved;

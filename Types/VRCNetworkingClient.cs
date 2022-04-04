@@ -13,7 +13,7 @@ namespace KiraiMod.Core.Types
 
         static VRCNetworkingClient()
         {
-            m_OnEvent = Events.Hooks.AssemblyCSharp.GetExportedTypes()
+            m_OnEvent = Utils.Misc.AssemblyCSharp.GetExportedTypes()
                 .Where(x => !x.IsGenericType && x.DeclaringType == null && x.BaseType?.BaseType == typeof(Il2CppSystem.Object))
                 .SelectMany(x => x.GetMethods())
                 .FirstOrDefault(x =>

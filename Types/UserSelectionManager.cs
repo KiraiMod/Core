@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using TypeScanner.Types;
 using UnityEngine;
 using VRC.Core;
@@ -13,7 +10,7 @@ namespace KiraiMod.Core.Types
     public static class UserSelectionManager
     {
         public static Type Type = ClassDef.Create(nameof(UserSelectionManager))
-            .FromAssembly(Events.Hooks.AssemblyCSharp)
+            .FromAssembly(Utils.Misc.AssemblyCSharp)
             .DerivesFrom<MonoBehaviour>()
             .ConstructorCount(2)
             .WithMethods(
