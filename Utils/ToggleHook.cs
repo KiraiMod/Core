@@ -53,9 +53,9 @@ namespace KiraiMod.Core.Utils
 
         public ToggleHook Toggle(bool? state = null)
         {
-            state ??= this.state;
+            state ??= !this.state;
 
-            if ((bool)!state) Enable();
+            if ((bool)state) Enable();
             else Disable();
             return this;
         }
