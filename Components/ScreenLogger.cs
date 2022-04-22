@@ -33,14 +33,11 @@ namespace KiraiMod.Core.Components
 
         static ScreenLogger() => Events.UIManagerLoaded += UILoaded;
 
-        private static void UILoaded() =>
-            enabled.SettingChanged += ((EventHandler)((sender, args) => {
-                listener = enabled.Value ? new() : null;
-            })).Invoke();
+        private static void UILoaded() => enabled.SettingChanged += ((EventHandler)((sender, args) => listener = enabled.Value ? new() : null)).Invoke();
 
         public static void DisplayOnScreen(string message, float duration = 3) => listener?.Display(message, duration);
 
-        public sealed class Listener : ILogListener
+        public sealed class Listener : ILogListener, IDisposable
         {
             public LogLevel LogLevelFilter => level.Value;
 

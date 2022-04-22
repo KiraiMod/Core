@@ -27,6 +27,7 @@ namespace KiraiMod.Core
 
             typeof(Utils.Misc).Initialize();
             typeof(Managers.KeybindManager).Initialize();
+            typeof(Components.FatalLogger).Initialize();
             typeof(Components.ScreenLogger).Initialize();
         }
 
