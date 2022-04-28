@@ -1,0 +1,32 @@
+name: .NET
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup.NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 5.0.x
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --c Release
+
+      - name: Pack
+        run: dotnet pack --no-build --c Release
+
+      - name: Publish
+        run: dotnet nuget push ./bin/Release/*.nupkg -s https://nuget.pkg.github.com/KiraiMod/index.json --skip-duplicate --no-symbols
