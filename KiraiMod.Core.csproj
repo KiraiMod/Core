@@ -24,7 +24,7 @@
 
 	<PropertyGroup>
 		<RepositoryUrl>https://github.com/KiraiMod/Core</RepositoryUrl>
-		<PackageVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmm"))</PackageVersion>
+		<PackageVersion>$([System.DateTime]::Now.ToString("0.yyyy.MMdd.HHmm"))</PackageVersion>
 		<AssemblyVersion>$(PackageVersion)</AssemblyVersion>
 	</PropertyGroup>
 	
