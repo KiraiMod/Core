@@ -29,6 +29,7 @@ namespace KiraiMod.Core
             typeof(Managers.KeybindManager).Initialize();
             typeof(Components.FatalLogger).Initialize();
             typeof(Components.ScreenLogger).Initialize();
+            typeof(Managers.RPCManager).Initialize();
         }
 
         private static class LoadAssemblyCSharp

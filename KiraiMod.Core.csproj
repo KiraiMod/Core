@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<LangVersion>preview</LangVersion>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,4 +21,10 @@
 		<PackageReference Include="VRC.GameLibs" Version="*-*" PrivateAssets="all" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<RepositoryUrl>https://github.com/KiraiMod/Core</RepositoryUrl>
+		<PackageVersion>$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmm"))</PackageVersion>
+		<AssemblyVersion>$(PackageVersion)</AssemblyVersion>
+	</PropertyGroup>
+	
 </Project>
