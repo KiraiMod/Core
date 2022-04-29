@@ -17,8 +17,6 @@ namespace KiraiMod.Core
             {
                 SceneLoaded += scene =>
                 {
-                    WaitForInstance().Start();
-
                     if (scene.buildIndex == -1)
                         Loaded?.StableInvoke(scene);
                 };
@@ -28,6 +26,8 @@ namespace KiraiMod.Core
                     if (scene.buildIndex != -1)
                         Unloaded?.StableInvoke(scene);
                 };
+
+                Loaded += scene => WaitForInstance().Start();
             }
 
             private static IEnumerator WaitForInstance()
