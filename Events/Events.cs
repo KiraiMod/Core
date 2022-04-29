@@ -10,26 +10,49 @@ using VRC.Core;
 
 namespace KiraiMod.Core
 {
-    public static class Events
+    public static partial class Events
     {
         private const BindingFlags PrivateStatic = BindingFlags.NonPublic | BindingFlags.Static;
         private static readonly HarmonyLib.Harmony Harmony = new(Plugin.GUID);
 
+        public static event Action<Scene> SceneLoaded;
+        public static event Action<Scene> SceneUnloaded;
+
         public static event Action ApplicationStart; // scene 0
         public static event Action UIManagerLoaded; // scene 1
-        public static event Action<Scene> WorldLoaded; // scene -1
-        public static event Action<Scene> WorldUnloaded; // scene -1
-        public static event Action Update;
-        public static event Action<ApiWorldInstance> WorldInstanceLoaded;
+        public static event Action EmptyLoaded; // scene 2
 
-        [Obsolete("Use Events.Player.Joined instead")]
+        [Obsolete("Use Events.World.Loaded instead")]
+        public static event Action<Scene> WorldLoaded
+        {
+            add => World.Loaded += value;
+            remove => World.Loaded -= value;
+        }
+
+        [Obsolete("Use Events.World.Loaded instead")]
+        public static event Action<Scene> WorldUnloaded
+        {
+            add => World.Loaded += value;
+            remove => World.Loaded -= value;
+        }
+
+        [Obsolete("Use Events.World.Loaded instead")]
+        public static event Action<ApiWorldInstance> WorldInstanceLoaded
+        {
+            add => World.InstanceLoaded += value;
+            remove => World.InstanceLoaded -= value;
+        }
+
+        public static event Action Update;
+
+        [Obsolete("Use Events.Player.Joined instead", true)]
         public static event Action<Types.Player> PlayerJoined
         {
             add => Player.Joined += value;
             remove => Player.Joined -= value;
         }
 
-        [Obsolete("Use Events.Player.Left instead")]
+        [Obsolete("Use Events.Player.Left instead", true)]
         public static event Action<Types.Player> PlayerLeft
         {
             add => Player.Left += value;
@@ -41,51 +64,26 @@ namespace KiraiMod.Core
             SceneManager.add_sceneLoaded((UnityAction<Scene, LoadSceneMode>)HookSceneLoaded);
             SceneManager.add_sceneUnloaded((UnityAction<Scene>)HookSceneUnloaded);
             IL2CPPChainloader.AddUnityComponent<MonoHelper>();
-
-            WorldLoaded += scene => WaitForInstance().Start();
         }
 
         private static void HookSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Plugin.Logger.LogInfo($"Loading scene {scene.buildIndex}: {scene.name}");
+            Plugin.Logger.LogInfo($"Loaded scene {scene.buildIndex}: {scene.name}");
 
-            if (scene.buildIndex == -1)
-                WorldLoaded?.StableInvoke(scene);
-            else if (scene.buildIndex == 0)
+            SceneLoaded?.StableInvoke(scene);
+
+            if (scene.buildIndex == 0)
                 ApplicationStart?.StableInvoke();
             else if (scene.buildIndex == 1)
                 UIManagerLoaded?.StableInvoke();
+            else if (scene.buildIndex == 2)
+                EmptyLoaded?.StableInvoke();
         }
 
         private static void HookSceneUnloaded(Scene scene)
         {
             if (scene == null) return;
-            if (scene.buildIndex == -1)
-                WorldUnloaded?.StableInvoke(scene);
-        }
-
-        private static IEnumerator WaitForInstance()
-        {
-            ApiWorldInstance instance;
-            while ((instance = Types.RoomManager.GetCurrentWorld()) == null)
-                yield return null;
-
-            WorldInstanceLoaded?.StableInvoke(instance);
-        }
-
-        public static class Player
-        {
-            public static event Action<Types.Player> Joined;
-            public static event Action<Types.Player> Left;
-
-            static Player()
-            {
-                Harmony.Patch(Types.Player.Type.GetMethod("OnNetworkReady"), null, typeof(Player).GetMethod(nameof(OnPlayerJoined), PrivateStatic).ToHM());
-                Harmony.Patch(Types.Player.Type.GetMethod("OnDestroy"), typeof(Player).GetMethod(nameof(OnPlayerLeft), PrivateStatic).ToHM());
-            }
-
-            private static void OnPlayerJoined(MonoBehaviour __instance) => Joined?.StableInvoke(new Types.Player(__instance));
-            private static void OnPlayerLeft(MonoBehaviour __instance) => Left?.StableInvoke(new Types.Player(__instance));
+            SceneUnloaded?.StableInvoke(scene);
         }
 
         private class MonoHelper : MonoBehaviour
