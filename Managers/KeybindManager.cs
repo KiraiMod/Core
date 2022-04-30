@@ -15,7 +15,7 @@ namespace KiraiMod.Core.Managers
         {
             TomlTypeConverter.AddConverter(typeof(Key[]), new TypeConverter()
             {
-                ConvertToObject = (str, type) => str.Substring(1, str.Length - 2).Split(',').Select(x => (Key)Enum.Parse(typeof(Key), x.Trim())).ToArray(),
+                ConvertToObject = (str, type) => str[1..^1].Split(',').Select(x => (Key)Enum.Parse(typeof(Key), x.Trim())).ToArray(),
                 ConvertToString = (obj, type) => $"[{string.Join(", ", (obj as Key[]).Select(x => Enum.GetName(typeof(Key), x)))}]",
             });
 

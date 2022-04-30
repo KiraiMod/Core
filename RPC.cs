@@ -36,5 +36,13 @@ namespace KiraiMod.Core
         {
             AnnouncePresence = 0,
         }
+
+        // todo: whitelist & blacklist system
+        public enum TrustPolicy
+        {
+            Nobody,
+            Friends,
+            Everyone,
+        }
     }
 }
