@@ -9,6 +9,7 @@ using VRC.SDKBase;
 
 namespace KiraiMod.Core.Components
 {
+    [ModuleAPI.Module]
     public static class ScreenLogger
     {
         public static ConfigEntry<bool> enabled = Plugin.Configuration.Bind("Logging.Screen", "Enabled", true, "Should the on screen logger be created and used");

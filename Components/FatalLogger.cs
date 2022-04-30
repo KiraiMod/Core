@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace KiraiMod.Core.Components
 {
+    [ModuleAPI.Module]
     public static class FatalLogger
     {
         public static ConfigEntry<bool> enabled = Plugin.Configuration.Bind("Logging.Fatal", "Enabled", true, "Should the fatal logger show a MessageBox when a fatal error is encountered");
