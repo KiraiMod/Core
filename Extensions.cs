@@ -27,6 +27,8 @@ namespace KiraiMod.Core
 
         public static void StableInvoke(this Action action) => action.GetInvocationList().Cast<Action>().ForEach(sub => { try { sub(); } catch (Exception ex) { Plugin.Logger.LogError(ex); } });
         public static void StableInvoke<T>(this Action<T> action, T value) => action.GetInvocationList().Cast<Action<T>>().ForEach(sub => { try { sub(value); } catch (Exception ex) { Plugin.Logger.LogError(ex); } });
+        public static void StableInvoke<T1,T2>(this Action<T1,T2> action, T1 value1, T2 value2) => action.GetInvocationList().Cast<Action<T1,T2>>().ForEach(sub => { try { sub(value1, value2); } catch (Exception ex) { Plugin.Logger.LogError(ex); } });
+        public static void StableInvoke<T1,T2,T3>(this Action<T1,T2,T3> action, T1 value1, T2 value2, T3 value3) => action.GetInvocationList().Cast<Action<T1,T2,T3>>().ForEach(sub => { try { sub(value1, value2, value3); } catch (Exception ex) { Plugin.Logger.LogError(ex); } });
 
         // System.Type extensions
         public static void Initialize(this Type type) => System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
