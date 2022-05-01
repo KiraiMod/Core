@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using VRC.SDKBase;
 
 namespace KiraiMod.Core.Managers
 {
@@ -21,12 +22,12 @@ namespace KiraiMod.Core.Managers
         }
 
         private static bool _forced = false; // core will never set this
-        public static bool ForceEnable //       it is indended for other plugins to use 
+        public static bool ForceEnable //       it is intended for other plugins to use 
         { //                                    since they can run any code, it doesn't matter
             set //                              there is no reason to try to prevent it
-            {
-                _forced = true;
-                Refresh();
+            { //                                if you really wanted to prevent it, 
+                _forced = true; //              you could increment the moderator count
+                Refresh(); //                   and then turn moderator safety on
             }
         }
 
@@ -35,30 +36,10 @@ namespace KiraiMod.Core.Managers
         public static ConfigEntry<bool> Enabled = Plugin.Configuration.Bind("RPC", "Enabled", true, "Should messages be exchanged between clients");
         public static ConfigEntry<bool> ModeratorSafety = Plugin.Configuration.Bind("RPC", "ModeratorSafety", false, "Should messages be dropped when a moderator is in the instance");
 
-        private static readonly ToggleHook[] hooks;
         private static int moderators = 0;
 
         static RPCManager()
         {
-            // if this breaks, replace it with a type scan or with `VRC.SDKBase.Networking.GetEventDispatcher`
-            hooks = typeof(VRC_EventDispatcherPublicObHa1VRStVrStHa1VrUnique)
-                .GetMethods()
-                .Where(x =>
-                {
-                    if (x.ReturnType != typeof(void))
-                        return false;
-
-                    var parms = x.GetParameters();
-                    return parms.Length == 5
-                        && parms[0].ParameterType == Types.Player.Type
-                        && parms[1].ParameterType == typeof(VRC.SDKBase.VRC_EventHandler.VrcEvent)
-                        && parms[2].ParameterType == typeof(VRC.SDKBase.VRC_EventHandler.VrcBroadcastType)
-                        && parms[3].ParameterType == typeof(int)
-                        && parms[4].ParameterType == typeof(float);
-                })
-                .Select(x => new ToggleHook(x, typeof(RPCManager).GetMethod(nameof(OnEvent), BindingFlags.NonPublic | BindingFlags.Static)))
-                .ToArray();
-
             Events.Player.Joined += player =>
             {
                 if (player.VRCPlayerApi.isModerator) moderators++;
@@ -82,13 +63,15 @@ namespace KiraiMod.Core.Managers
 
             prevActive = active;
 
-            hooks.ForEach(x => x.Toggle(active));
+            if (active)
+                Events.VRCEvent.Recieved += OnEvent;
+            else Events.VRCEvent.Recieved -= OnEvent;
         }
 
-        private static void OnEvent(MonoBehaviour __0, VRC.SDKBase.VRC_EventHandler.VrcEvent __1)
+        private static void OnEvent(Types.Player player, ref VRC_EventHandler.VrcEvent ev, ref VRC_EventHandler.VrcBroadcastType type)
         {
-            if (__1.ParameterString == "UdonSyncRunProgramAsRPC")
-                HandleKMEv(__0, __1);
+            if (ev.ParameterString == "UdonSyncRunProgramAsRPC")
+                HandleKMEv(player, ev);
         }
 
         //  KMEv header
@@ -96,7 +79,7 @@ namespace KiraiMod.Core.Managers
         // 0x?? 0x?? 0x?? 0x??  int     event id
         // 0x??                 byte    packet version
         // 0x??                 byte    reserved
-        private static unsafe void HandleKMEv(MonoBehaviour player, VRC.SDKBase.VRC_EventHandler.VrcEvent ev)
+        private static unsafe void HandleKMEv(Types.Player sender, VRC_EventHandler.VrcEvent ev)
         {
             if (ev.ParameterBytes.Length < 8)
                 return;
@@ -108,8 +91,6 @@ namespace KiraiMod.Core.Managers
 
             uint id = *(uint*)(ptr + 2);
             byte reserved = *(ptr + 7);
-
-            Types.Player sender = new(player);
 
             switch (*(ptr + 6))
             {
