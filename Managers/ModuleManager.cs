@@ -1,4 +1,5 @@
 ﻿using KiraiMod.Core.ModuleAPI;
+using KiraiMod.Core.ModuleAPI.Subtypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +19,21 @@ namespace KiraiMod.Core.Managers
                 {
                     var attribute = t.GetCustomAttribute<ModuleAttribute>();
                     if (attribute != null)
-                        attribute.__declarer = t;
+                        attribute.Type = t;
                     return attribute;
                 })
                 .Where(x => x is not null);
 
             modules.ForEach(x => {
-                Plugin.Logger.LogDebug("Initializing " + x.__declarer.FullName);
-                try { x.__declarer.Initialize(); }
-                catch (Exception ex) { Plugin.Logger.LogError("Exception occurred whilst loading " + x.__declarer.FullName + ": " + ex); }
+                Plugin.Logger.LogDebug("Initializing " + x.Type.FullName);
+                try { SetupModule(x); }
+                catch (Exception ex) { Plugin.Logger.LogError("Exception occurred whilst loading " + x.Type.FullName + ": " + ex); }
             });
+        }
+
+        public static void SetupModule(ModuleAttribute module)
+        {
+            module.Type.Initialize();
         }
     }
 }
