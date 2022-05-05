@@ -9,6 +9,9 @@ namespace KiraiMod.Core.Managers
 {
     public static class ModuleManager
     {
+        public static Dictionary<string, Section> Sections = new();
+        public static event Action<string, Section> SectionCreated;
+
         static ModuleManager() => Register(Assembly.GetExecutingAssembly());
 
         public static void Register() => Register(Assembly.GetCallingAssembly());
@@ -24,7 +27,8 @@ namespace KiraiMod.Core.Managers
                 })
                 .Where(x => x is not null);
 
-            modules.ForEach(x => {
+            modules.ForEach(x =>
+            {
                 Plugin.Logger.LogDebug("Initializing " + x.Type.FullName);
                 try { SetupModule(x); }
                 catch (Exception ex) { Plugin.Logger.LogError("Exception occurred whilst loading " + x.Type.FullName + ": " + ex); }
@@ -34,6 +38,37 @@ namespace KiraiMod.Core.Managers
         public static void SetupModule(ModuleAttribute module)
         {
             module.Type.Initialize();
+
+            var members = module.Type.GetMembers()
+                .SelectMany(x =>
+                {
+                    var members = x.GetCustomAttributes<MemberAttribute>();
+                    foreach (MemberAttribute member in members)
+                        member.Setup(module.Type, x);
+                    return members;
+                })
+                .GroupBy(x => x.Section);
+
+            members.ForEach(x =>
+            {
+                if (!Sections.TryGetValue(x.Key, out Section section))
+                {
+                    section = new();
+                    Sections[x.Key] = section;
+                    SectionCreated?.StableInvoke(x.Key, section);
+                }
+
+                section.Members.AddRange(x);
+                section.InvokeEvent(x.ToArray());
+            });
+        }
+
+        public class Section
+        {
+            public List<MemberAttribute> Members = new();
+            public event Action<MemberAttribute[]> MembersAdded;
+
+            internal void InvokeEvent(MemberAttribute[] members) => MembersAdded?.StableInvoke(members);
         }
     }
 }
