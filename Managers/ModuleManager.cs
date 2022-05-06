@@ -1,5 +1,5 @@
-﻿using KiraiMod.Core.ModuleAPI;
-using KiraiMod.Core.ModuleAPI.Subtypes;
+﻿using BepInEx.Configuration;
+using KiraiMod.Core.ModuleAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +9,7 @@ namespace KiraiMod.Core.Managers
 {
     public static class ModuleManager
     {
-        public static Dictionary<string, Section> Sections = new();
-        public static event Action<string, Section> SectionCreated;
+        internal static readonly ConfigFile Config = new("BepInEx/config/KMCoreModuleAPI.cfg", false);
 
         static ModuleManager() => Register(Assembly.GetExecutingAssembly());
 
@@ -39,36 +38,13 @@ namespace KiraiMod.Core.Managers
         {
             module.Type.Initialize();
 
-            var members = module.Type.GetMembers()
-                .SelectMany(x =>
+            module.Type.GetMembers()
+                .ForEach(x =>
                 {
                     var members = x.GetCustomAttributes<MemberAttribute>();
                     foreach (MemberAttribute member in members)
                         member.Setup(module.Type, x);
-                    return members;
-                })
-                .GroupBy(x => x.Section);
-
-            members.ForEach(x =>
-            {
-                if (!Sections.TryGetValue(x.Key, out Section section))
-                {
-                    section = new();
-                    Sections[x.Key] = section;
-                    SectionCreated?.StableInvoke(x.Key, section);
-                }
-
-                section.Members.AddRange(x);
-                section.InvokeEvent(x.ToArray());
-            });
-        }
-
-        public class Section
-        {
-            public List<MemberAttribute> Members = new();
-            public event Action<MemberAttribute[]> MembersAdded;
-
-            internal void InvokeEvent(MemberAttribute[] members) => MembersAdded?.StableInvoke(members);
+                });
         }
     }
 }

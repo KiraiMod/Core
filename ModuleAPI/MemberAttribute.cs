@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace KiraiMod.Core.ModuleAPI.Subtypes
+namespace KiraiMod.Core.ModuleAPI
 {
     public abstract class MemberAttribute : Attribute
     {
@@ -9,7 +9,6 @@ namespace KiraiMod.Core.ModuleAPI.Subtypes
         public string Section;
         public string Name;
 
-        public MemberAttribute(string Name) : this(null, Name) { }
         public MemberAttribute(string Section, string Name)
         {
             this.Section = Section;

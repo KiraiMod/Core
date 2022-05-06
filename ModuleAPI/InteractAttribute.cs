@@ -4,7 +4,7 @@ using System.Reflection;
 namespace KiraiMod.Core.ModuleAPI
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class InteractAttribute : Subtypes.MemberAttribute
+    public class InteractAttribute : MemberAttribute
     {
         public Action Invoke;
 
