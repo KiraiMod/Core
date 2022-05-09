@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using VRC.SDKBase;
 
@@ -17,8 +16,8 @@ namespace KiraiMod.Core
             static VRCEvent()
             {
                 HarmonyLib.HarmonyMethod hk = typeof(VRCEvent).GetMethod(nameof(OnVRCEvent), PrivateStatic).ToHM();
-                
-                typeof(VRC_EventDispatcherPublicObHa1VRStVrStHa1VrUnique)
+
+                Types.VRC_EventDispatcher.Type
                     .GetMethods()
                     .Where(x =>
                     {
@@ -40,7 +39,7 @@ namespace KiraiMod.Core
             {
                 Types.Player player = new(__0);
                 Delegate[] list = Recieved.GetInvocationList();
-                
+
                 for (int i = 0; i < list.Length; i++)
                     try { (list[i] as OnVRCEvent_T)(player, ref __1, ref __2); }
                     catch (Exception ex) { Plugin.Logger.LogError(ex); }
