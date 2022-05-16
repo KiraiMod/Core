@@ -43,7 +43,7 @@ namespace KiraiMod.Core.Managers
                 {
                     var members = x.GetCustomAttributes<MemberAttribute>();
                     foreach (MemberAttribute member in members)
-                        member.Setup(module.Type, x);
+                        member.SetupInternal(module.Type, x);
                 });
         }
     }

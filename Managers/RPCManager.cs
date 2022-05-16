@@ -108,7 +108,7 @@ namespace KiraiMod.Core.Managers
             Plugin.Logger.LogDebug($"KMEv0 {id} ({sender.VRCPlayerApi.displayName}): {string.Concat(data.Select(x => x.ToString("X")))}");
 
             if (listeners.TryGetValue(id, out Action<Types.Player, byte[]> listener))
-                listener?.Invoke(sender, data);
+                listener?.StableInvoke(sender, data);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace KiraiMod.Core.ModuleAPI
         private bool state;
 
         public KeybindAttribute(string Name, T On, T Off, params Key[] Keys) : this(null, Name, On, Off, Keys) { }
-        public KeybindAttribute(string Section, string Name, T On, T Off, params Key[] Keys) : base(Section, Name + "Keybind", Off)
+        public KeybindAttribute(string Section, string Name, T On, T Off, params Key[] Keys) : base(Section, Name.EndsWith("Keybind") ? Name : Name + "Keybind", Off)
         {
             this.Keys = Keys;
             this.On = On;
@@ -38,8 +38,11 @@ namespace KiraiMod.Core.ModuleAPI
 
         public override void Setup(Type Type, MemberInfo minfo)
         {
-            base.Setup(Type, minfo);
-            Managers.ModuleManager.Config.Bind(Section, Name, Keys).Register(() => Value = (state ^= true) ? On : Off);
+            MinimalSetup(Type, minfo);
+
+            base.DynamicValueChanged += _ => state ^= true;
+
+            Managers.ModuleManager.Config.Bind(Section, Name, Keys).Register(() => Value = !state ? On : Off);
         }
     }
 }

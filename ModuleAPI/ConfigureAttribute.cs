@@ -4,30 +4,75 @@ using System.Reflection;
 
 namespace KiraiMod.Core.ModuleAPI
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class ConfigureAttribute<T> : MemberAttribute
+    // this REALLY needs a rewrite
+    public abstract class BaseConfigureAttribute : MemberAttribute
     {
+        public static event Action<MemberInfo> MemberConfigured;
+
+        protected BaseConfigureAttribute(string Section, string Name) : base(Section, Name) { }
+
+        public abstract event Action<dynamic> DynamicValueChanged;
+        public abstract dynamic DynamicValue { get; set; }
+
+        protected static void ConfigureMember(MemberInfo member) => MemberConfigured?.StableInvoke(member);
+    }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class ConfigureAttribute<T> : BaseConfigureAttribute
+    {
+        public override dynamic DynamicValue {
+            get => Value;
+            set => Value = value;
+        }
+
         public T Value
         {
             get => Getter();
             set {
                 T val = Getter();
-                if ((value is null && val == null) || value.Equals(val))
+                if ((value is null && val is null) || value.Equals(val))
                     return;
-                Setter(Entry.Value = value);
+
+                if (Entry != null)
+                    Entry.Value = value;
+
+                Setter(value);
+                ConfigureMember(Info);
             }
         }
 
         private ConfigEntry<T> Entry;
         private Action<T> Setter;
         private Func<T> Getter;
-        private readonly T Default;
+        private MemberInfo Info;
 
-        public ConfigureAttribute(string Section, string Name, T Default) : base(Section, Name) => this.Default = Default;
+        private readonly T Default;
+        private readonly bool Saved;
+
+        public override event Action<dynamic> DynamicValueChanged;
+
+        public ConfigureAttribute(string Section, string Name, T Default, bool Saved = true) : base(Section, Name)
+        {
+            this.Default = Default;
+            this.Saved = Saved;
+        }
 
         public override void Setup(Type Type, MemberInfo minfo)
         {
+            MinimalSetup(Type, minfo);
+
+            if (Saved)
+            {
+                Entry = Managers.ModuleManager.Config.Bind(Section, Name, Default);
+                Entry.SettingChanged += ((EventHandler)((sender, args) => Value = Entry.Value)).Invoke();
+            }
+        }
+
+        public void MinimalSetup(Type Type, MemberInfo minfo)
+        {
             base.Setup(Type, minfo);
+
+            Info = minfo;
 
             if (minfo is PropertyInfo prop)
             {
@@ -47,8 +92,11 @@ namespace KiraiMod.Core.ModuleAPI
                 Getter = () => (T)field.GetValue(null);
             }
 
-            Entry = Managers.ModuleManager.Config.Bind(Section, Name, Default);
-            Entry.SettingChanged += ((EventHandler)((sender, args) => Value = Entry.Value)).Invoke();
+            MemberConfigured += member =>
+            {
+                if (member == Info)
+                    DynamicValueChanged?.StableInvoke(Getter());
+            };
         }
     }
 }
