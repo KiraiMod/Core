@@ -10,13 +10,17 @@ namespace KiraiMod.Core.ModuleAPI
         public static List<MemberAttribute> All = new();
 
         public Type Type;
-        public string Section;
-        public string Name;
 
-        public MemberAttribute(string Section, string Name)
+        public string[] Parts;
+        public string Display;
+        public string Description;
+
+        public string Name { get => Display ?? Parts[^1]; }
+        public string Section { get => string.Join(".", Parts[0..^1]); }
+
+        public MemberAttribute(string Path)
         {
-            this.Section = Section;
-            this.Name = Name;
+            Parts = Path.Split('.');
         }
 
         public virtual void Setup(Type Type, MemberInfo minfo) => this.Type = Type;

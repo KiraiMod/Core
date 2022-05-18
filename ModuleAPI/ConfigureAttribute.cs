@@ -9,7 +9,7 @@ namespace KiraiMod.Core.ModuleAPI
     {
         public static event Action<MemberInfo> MemberConfigured;
 
-        protected BaseConfigureAttribute(string Section, string Name) : base(Section, Name) { }
+        protected BaseConfigureAttribute(string Path) : base(Path) { }
 
         public abstract event Action<dynamic> DynamicValueChanged;
         public abstract dynamic DynamicValue { get; set; }
@@ -51,7 +51,7 @@ namespace KiraiMod.Core.ModuleAPI
 
         public override event Action<dynamic> DynamicValueChanged;
 
-        public ConfigureAttribute(string Section, string Name, T Default, bool Saved = true) : base(Section, Name)
+        public ConfigureAttribute(string Path, T Default, bool Saved = true) : base(Path)
         {
             this.Default = Default;
             this.Saved = Saved;
@@ -63,7 +63,7 @@ namespace KiraiMod.Core.ModuleAPI
 
             if (Saved)
             {
-                Entry = Managers.ModuleManager.Config.Bind(Section, Name, Default);
+                Entry = Managers.ModuleManager.Config.Bind(Section, Parts[^1], Default, Description);
                 Entry.SettingChanged += ((EventHandler)((sender, args) => Value = Entry.Value)).Invoke();
             }
         }

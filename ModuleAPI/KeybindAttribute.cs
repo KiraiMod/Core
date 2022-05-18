@@ -10,8 +10,7 @@ namespace KiraiMod.Core.ModuleAPI
     {
         private readonly Key[] Keys;
 
-        public KeybindAttribute(string Name, params Key[] Keys) : this(null, Name, Keys) {}
-        public KeybindAttribute(string Section, string Name, params Key[] Keys) : base(Section, Name + "Keybind") => this.Keys = Keys;
+        public KeybindAttribute(string Path, params Key[] Keys) : base(Path) => this.Keys = Keys;
 
         public override void Setup(Type Type, MemberInfo minfo)
         {
@@ -28,8 +27,7 @@ namespace KiraiMod.Core.ModuleAPI
         private readonly T Off;
         private bool state;
 
-        public KeybindAttribute(string Name, T On, T Off, params Key[] Keys) : this(null, Name, On, Off, Keys) { }
-        public KeybindAttribute(string Section, string Name, T On, T Off, params Key[] Keys) : base(Section, Name.EndsWith("Keybind") ? Name : Name + "Keybind", Off)
+        public KeybindAttribute(string Path, T On, T Off, params Key[] Keys) : base(Path.EndsWith("Keybind") ? Path : Path + "Keybind", Off)
         {
             this.Keys = Keys;
             this.On = On;

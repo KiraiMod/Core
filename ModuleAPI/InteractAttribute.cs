@@ -8,8 +8,7 @@ namespace KiraiMod.Core.ModuleAPI
     {
         public Action Invoke;
 
-        public InteractAttribute(string Name) : base(null, Name) { }
-        public InteractAttribute(string Section, string Name) : base(Section, Name) { }
+        public InteractAttribute(string Path) : base(Path) { }
 
         public override void Setup(Type Type, MemberInfo minfo)
         {
