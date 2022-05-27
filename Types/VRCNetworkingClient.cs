@@ -36,7 +36,7 @@ namespace KiraiMod.Core.Types
                     && args[1].ParameterType == typeof(Il2CppSystem.Object)
                     //&& !args[2].ParameterType.IsValueType
                     && args[3].ParameterType == typeof(SendOptions);
-                }).ElementAt(1);
+                }).ElementAt(0);
 
             Type.LogAs("VRCNetworkingClient");
             m_OnEvent.LogAs(".OnEvent");
