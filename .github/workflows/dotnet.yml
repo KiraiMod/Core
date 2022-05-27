@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,12 +31,12 @@ jobs:
 
       - name: Publish
         run: dotnet nuget push ./bin/Release/*.nupkg -s https://nuget.kiraihooks.me/v3/index.json -k ${{ secrets.NUGET_KIRAIHOOKS_ME_KEY }}
-
+      
       - name: Generate release tag
         id: tag
         run: |
-          echo "::set-output name=release_tag::UserBuild_$(date +"%Y.%m.%d_%H-%M")"
-          
+          echo "::set-output name=release_tag::Build_$(date +"%Y.%m.%d_%H-%M")"
+      
       - name: Publish a release
         uses: softprops/action-gh-release@v1
         with:
