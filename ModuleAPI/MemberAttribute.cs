@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BepInEx.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -13,7 +14,7 @@ namespace KiraiMod.Core.ModuleAPI
 
         public string[] Parts;
         public string Display;
-        public string Description;
+        public ConfigDescription Description;
 
         public string Name { get => Display ?? Parts[^1]; }
         public string Section { get => string.Join(".", Parts[0..^1]); }
