@@ -50,7 +50,7 @@ namespace KiraiMod.Core.Components
                 GameObject go = new("KiraiMod.Core.Log");
                 Log = go.AddComponent<Text>();
 
-                go.transform.SetParent(GameObject.Find("UserInterface/UnscaledUI/HudContent/Hud").transform, false);
+                go.transform.SetParent(GameObject.Find("UserInterface/UnscaledUI/HudContent_Old/Hud").transform, false);
                 go.transform.localPosition = new(15, 300);
 
                 go.GetComponent<RectTransform>().sizeDelta = new Vector2(1_000, 30);
