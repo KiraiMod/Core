@@ -26,21 +26,31 @@ namespace KiraiMod.Core.Types
 
         private static readonly PropertyInfo m_APIUser = Type?.GetProperties().FirstOrDefault(f => f.PropertyType == typeof(APIUser));
         private static readonly PropertyInfo m_VRCPlayerApi = Type?.GetProperties().FirstOrDefault(f => f.PropertyType == typeof(VRCPlayerApi));
+        private static readonly PropertyInfo m_VRCPlayer = Type?.GetProperties().FirstOrDefault(f => f.PropertyType == Types.VRCPlayer.Type);
 
-        static Player() => Type.LogAs(nameof(Player));
+        static Player()
+        {
+            Type.LogAs(nameof(Player));
+            m_APIUser.LogAs(".APIUser");
+            m_VRCPlayerApi.LogAs(".VRCPlayerApi");
+            m_VRCPlayer.LogAs(".VRCPlayer");
+        } 
 
         public readonly MonoBehaviour Inner;
         public readonly Lazy<APIUser> _APIUser;
         public readonly Lazy<VRCPlayerApi> _VRCPlayerApi;
+        public readonly Lazy<object> _VRCPlayer;
 
         public APIUser APIUser { get => _APIUser.Value; }
         public VRCPlayerApi VRCPlayerApi { get => _VRCPlayerApi.Value; }
+        public object VRCPlayer { get => _VRCPlayer.Value; }
 
         public Player(MonoBehaviour inner)
         {
             Inner = inner;
             _APIUser = new(() => m_APIUser?.GetValue(inner) as APIUser);
             _VRCPlayerApi = new(() => m_VRCPlayerApi?.GetValue(inner) as VRCPlayerApi);
+            _VRCPlayer = new(() => m_VRCPlayer?.GetValue(inner));
         }
 
         // dude, these still need testing

@@ -9,7 +9,7 @@ namespace KiraiMod.Core.Types
 {
     public static class UserSelectionManager
     {
-        public static Type Type = ClassDef.Create(nameof(UserSelectionManager))
+        public static readonly Type Type = ClassDef.Create(nameof(UserSelectionManager))
             .FromAssembly(Utils.Misc.AssemblyCSharp)
             .DerivesFrom<MonoBehaviour>()
             .ConstructorCount(2)
@@ -25,11 +25,12 @@ namespace KiraiMod.Core.Types
             )
             .Setup().Resolved;
 
-        public static PropertyInfo m_Instance = Type.GetProperties().FirstOrDefault(x => x.PropertyType == Type);
-        public static MethodInfo m_SelectUser = Type.GetMethods().FirstOrDefault(x => {
-            var parms = x.GetParameters();
+        private static readonly PropertyInfo[] m_APIUsers = Type.GetProperties().Where(x => x.PropertyType == typeof(APIUser)).ToArray();
+        private static readonly PropertyInfo m_Instance = Type.GetProperties().FirstOrDefault(x => x.PropertyType == Type);
+        private static readonly MethodInfo m_SelectUser = Type.GetMethods().FirstOrDefault(x => {
+            ParameterInfo[] parms = x.GetParameters();
             return parms.Length == 1 
-            && parms[0].ParameterType == typeof(APIUser);
+                && parms[0].ParameterType == typeof(APIUser);
         });
 
         static UserSelectionManager()
@@ -39,10 +40,16 @@ namespace KiraiMod.Core.Types
             m_SelectUser.LogAs(".SelectUser");
         }
 
-        public static Lazy<object> _Instance = new(() => m_Instance.GetValue(null));
+        public static readonly Lazy<object> _Instance = new(() => m_Instance.GetValue(null));
         public static object Instance
         {
             get => _Instance.Value;
+        }
+
+        public static APIUser SelectedUser
+        {
+            get => m_APIUsers.Select(info => (APIUser)info.GetValue(_Instance.Value)).FirstOrDefault(user => user is not null);
+            set => SelectUser(value);
         }
 
         // todo: bake this to a delegate

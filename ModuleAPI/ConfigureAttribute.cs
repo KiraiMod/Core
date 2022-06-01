@@ -30,6 +30,7 @@ namespace KiraiMod.Core.ModuleAPI
             get => Getter();
             set {
                 T val = Getter();
+                // todo: fix edge case where val is non-null and value is null
                 if ((value is null && val is null) || value.Equals(val))
                     return;
 

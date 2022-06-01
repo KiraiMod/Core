@@ -7,9 +7,9 @@ namespace KiraiMod.Core.Types
 {
     public static class VRCNetworkingClient
     {
-        public readonly static Type Type;
-        public readonly static MethodInfo m_OnEvent;
-        public readonly static MethodInfo m_OpRaiseEvent;
+        public static readonly Type Type;
+        public static readonly MethodInfo m_OnEvent;
+        public static readonly MethodInfo m_OpRaiseEvent;
 
         static VRCNetworkingClient()
         {
@@ -18,16 +18,16 @@ namespace KiraiMod.Core.Types
                 .SelectMany(x => x.GetMethods())
                 .FirstOrDefault(x =>
                 {
-                    var ps = x.GetParameters();
+                    ParameterInfo[] ps = x.GetParameters();
                     return x.ReturnType == typeof(void)
                     && ps.Length == 1
                     && ps[0].ParameterType == typeof(EventData)
                     && x.Name == "OnEvent";
                 });
 
-            Type = m_OnEvent.DeclaringType;
+            Type = m_OnEvent?.DeclaringType;
 
-            m_OpRaiseEvent = Type.GetMethods()
+            m_OpRaiseEvent = Type?.GetMethods()
                 .Where(x =>
                 {
                     ParameterInfo[] args = x.GetParameters();
