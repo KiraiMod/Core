@@ -7,6 +7,9 @@ using UnityEngine.InputSystem.LowLevel;
 
 namespace KiraiMod.Core.Managers
 {
+    // this only supports the keyboard
+    // once unhollower/interop supports blittable structs in delegates
+    // i will replace this with a better bind system
     public static class KeybindManager
     {
         public static readonly Dictionary<string, Keybind> binds = new();
@@ -19,7 +22,7 @@ namespace KiraiMod.Core.Managers
                 ConvertToString = (obj, type) => $"[{string.Join(", ", (obj as Key[]).Select(x => Enum.GetName(typeof(Key), x)))}]",
             });
 
-            // InputSystem.add_onEvent((Il2CppSystem.Action<InputEventPtr, InputDevice>)OnEvent);
+            InputSystem.onEvent += (Il2CppSystem.Action<InputEventPtr, InputDevice>)OnEvent;
         }
 
         // this will always run less than OnUpdate would've
