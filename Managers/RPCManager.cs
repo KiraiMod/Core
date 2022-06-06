@@ -1,10 +1,8 @@
 ﻿using BepInEx.Configuration;
-using KiraiMod.Core.Utils;
+using KiraiMod.Core.MessageAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using UnityEngine;
 using VRC.SDKBase;
 
 namespace KiraiMod.Core.Managers
@@ -31,7 +29,7 @@ namespace KiraiMod.Core.Managers
             }
         }
 
-        public static Dictionary<uint, Action<Types.Player, byte[]>> listeners = new();
+        public static Dictionary<uint, Action<Types.Player, Message>> listeners = new();
 
         public static ConfigEntry<bool> Enabled = Plugin.Configuration.Bind("RPC", "Enabled", true, "Should messages be exchanged between clients");
         public static ConfigEntry<bool> ModeratorSafety = Plugin.Configuration.Bind("RPC", "ModeratorSafety", false, "Should messages be dropped when a moderator is in the instance");
@@ -43,7 +41,7 @@ namespace KiraiMod.Core.Managers
             Events.Player.Joined += player =>
             {
                 if (player.VRCPlayerApi.isModerator) moderators++;
-                if (player.VRCPlayerApi.isLocal) RPC.Send((uint)RPC.CoreIDs.AnnouncePresence);
+                if (player.VRCPlayerApi.isLocal) Message.Send((uint)CoreIDs.AnnouncePresence);
             };
 
             Events.Player.Left += player =>
@@ -51,7 +49,7 @@ namespace KiraiMod.Core.Managers
                 if (player.VRCPlayerApi.isModerator)
                     moderators--;
             };
-            
+
             Enabled.SettingChanged += ((EventHandler)((sender, args) => Refresh())).Invoke();
         }
 
@@ -74,41 +72,70 @@ namespace KiraiMod.Core.Managers
                 HandleKMEv(player, ev);
         }
 
-        //  KMEv header
+        // message header
         // 0x53 0x06            short   magic
         // 0x?? 0x?? 0x?? 0x??  int     event id
-        // 0x??                 byte    packet version
         // 0x??                 byte    reserved
+        // 0x??                 byte    amount of headers
         private static unsafe void HandleKMEv(Types.Player sender, VRC_EventHandler.VrcEvent ev)
         {
-            if (ev.ParameterBytes.Length < 8)
-                return;
+            Message? _kmev = ParseEventData(ev.ParameterBytes);
 
-            byte* ptr = (byte*)ev.ParameterBytes.Pointer + 32;
+            if (_kmev is null) return;
+            Message kmev = (Message)_kmev;
 
-            if ((*(short*)ptr) != 0x06_53) // reversed due to little endian
-                return;
+            Plugin.Logger.LogDebug($"KMEvent {kmev.ID} ({sender.VRCPlayerApi.displayName})");
+            foreach (KeyValuePair<byte, byte[]> pair in kmev.Headers)
+                Plugin.Logger.LogDebug($"\t{pair.Key.ToString("X2")}: {string.Join(",", pair.Value.Select(x => x.ToString("X2")))}");
+            if (kmev.Body.Length > 0)
+                Plugin.Logger.LogDebug(string.Join(",", kmev.Body.Select(x => x.ToString("X2"))));
 
-            uint id = *(uint*)(ptr + 2);
-            byte reserved = *(ptr + 7);
-
-            switch (*(ptr + 6))
-            {
-                case 0:
-                    HandleKMEv0(sender, id, ev.ParameterBytes.Skip(8).ToArray()); // needs a better way to skip 
-                    break;
-
-                default:
-                    break;
-            }
+            if (listeners.TryGetValue(kmev.ID, out Action<Types.Player, Message> listener))
+                listener?.StableInvoke(sender, kmev);
         }
 
-        private static void HandleKMEv0(Types.Player sender, uint id, byte[] data)
+        private static unsafe Message? ParseEventData(UnhollowerBaseLib.Il2CppStructArray<byte> data)
         {
-            Plugin.Logger.LogDebug($"KMEv0 {id} ({sender.VRCPlayerApi.displayName}): {string.Concat(data.Select(x => x.ToString("X")))}");
+            byte* ptr = (byte*)data.Pointer + 32;
 
-            if (listeners.TryGetValue(id, out Action<Types.Player, byte[]> listener))
-                listener?.StableInvoke(sender, data);
+            // size check
+            if (data.Length < 8)
+                return null;
+
+            // magic check
+            if ((*(short*)ptr) != 0x06_53) // reversed due to little endian
+                return null;
+
+            uint id = *(uint*)(ptr + 2);
+            byte headerCount = *(ptr + 7);
+
+            Message msg = new(id);
+
+            int offset = 8;
+            byte[] dataArray = data.ToArray();
+
+            for (byte i = 0; i < headerCount; i++)
+            {
+                Console.WriteLine(offset);
+
+                int sizeRemaining = data.Length - offset - 2;
+                if (sizeRemaining < 0) return null;
+
+                byte* headerPtr = ptr + offset;
+
+                byte headerID = *headerPtr;
+                ushort headerSize = *(ushort*)(headerPtr + 1);
+
+                if (sizeRemaining - headerSize < 0) return null;
+
+                offset += headerSize + 3;
+
+                msg.Headers[headerID] = dataArray[(offset - headerSize)..offset];
+            }
+
+            msg.Body = dataArray[offset..];
+
+            return msg;
         }
     }
 }
