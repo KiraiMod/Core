@@ -25,6 +25,8 @@ namespace KiraiMod.Core
             try { LoadAssemblyCSharp.Somehow(); }
             catch { Log.LogWarning("Failed to load Assembly-CSharp manually"); }
 
+            typeof(Serializers.Color32).Initialize();
+
             typeof(Utils.Misc).Initialize();
             typeof(Managers.KeybindManager).Initialize();
             typeof(Managers.RPCManager).Initialize();
