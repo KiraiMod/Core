@@ -15,7 +15,9 @@ namespace KiraiMod.Core.MessageAPI.Components
         public static readonly List<string> Mods = new();
         private static readonly Dictionary<string, TagAPI.TagData> PlayerData = new();
         private static readonly TagAPI.Tag tag = new(player =>
-            PlayerData.TryGetValue(player.VRCPlayerApi.displayName, out TagAPI.TagData data)
+            player.VRCPlayerApi.isLocal
+            ? new() { Visible = Mods.Count != 0, Text = string.Join(" | ", Mods), TextColor = UnityEngine.Color.white, BackgroundColor = UnityEngine.Color.black }
+            : PlayerData.TryGetValue(player.VRCPlayerApi.displayName, out TagAPI.TagData data)
                 ? data
                 : new(),
             500
@@ -32,7 +34,7 @@ namespace KiraiMod.Core.MessageAPI.Components
                 if (!Enabled || sender.VRCPlayerApi.isLocal) return;
 
                 new Message(
-                    (int)CoreIDs.RequestModList, 
+                    (int)CoreIDs.RequestModList,
                     new MessageHeader[] { new Headers.TargetHeader(sender.VRCPlayerApi.displayName) },
                     System.Text.Encoding.UTF8.GetBytes(string.Join('\0', Mods))
                 ).Send();
