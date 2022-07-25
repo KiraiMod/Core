@@ -34,7 +34,7 @@ namespace KiraiMod.Core.TagAPI
         [HideFromIl2Cpp]
         public void Create(Tag tag)
         {
-            Transform rank = Object.Instantiate(stats, stats.parent, false);
+            Transform rank = Instantiate(stats, stats.parent, false);
             rank.name = $"AstralTag";
             rank.gameObject.active = true;
             Transform transform = null;

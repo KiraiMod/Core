@@ -30,10 +30,9 @@ namespace KiraiMod.Core.TagAPI
 
             if (data.Visible != parent.gameObject.activeSelf)
             {
-                player.RecalculatePositions();
+                parent.gameObject.active = data.Visible;
 
-                if (!(parent.gameObject.active = data.Visible))
-                    return;
+                player.RecalculatePositions();
             }
 
             if (data.Text != null) text.text = data.Text;
