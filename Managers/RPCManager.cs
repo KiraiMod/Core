@@ -116,8 +116,6 @@ namespace KiraiMod.Core.Managers
 
             for (byte i = 0; i < headerCount; i++)
             {
-                Console.WriteLine(offset);
-
                 int sizeRemaining = data.Length - offset - 2;
                 if (sizeRemaining < 0) return null;
 

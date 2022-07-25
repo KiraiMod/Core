@@ -43,7 +43,6 @@ namespace KiraiMod.Core.MessageAPI.Components
                 if (!Enabled || sender.VRCPlayerApi.isLocal) return;
 
                 Headers.TargetHeader header = message.GetHeader<Headers.TargetHeader>();
-                System.Console.WriteLine(string.Join("!",header.Targets));
                 if (header == null || !header.Targets.Contains(VRC.Core.APIUser.CurrentUser.displayName)) return;
 
                 AddModsFromMessage(sender, message);
