@@ -4,5 +4,7 @@
     public enum CoreIDs : uint
     {
         AnnouncePresence = 0,
+        RequestModList = 1,
+        SendModList = 2,
     }
 }

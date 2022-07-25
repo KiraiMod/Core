@@ -41,6 +41,7 @@ namespace KiraiMod.Core.MessageAPI
         public byte[] Body = Array.Empty<byte>();
 
         public Message(uint ID) => this.ID = ID;
+        public Message(uint ID, MessageHeader[] Headers) : this(ID, Headers, Array.Empty<byte>()) { }
         public Message(uint ID, MessageHeader[] Headers, byte[] Body) : this(ID, Headers.Select(x => (x.HeaderID, x.Serialize())).ToArray(), Body) { }
         public Message(uint ID, (byte, byte[])[] Headers, byte[] Body) : this(ID)
         {
