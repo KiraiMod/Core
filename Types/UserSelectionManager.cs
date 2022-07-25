@@ -4,6 +4,7 @@ using System.Reflection;
 using TypeScanner.Types;
 using UnityEngine;
 using VRC.Core;
+using VRC.SDKBase;
 
 namespace KiraiMod.Core.Types
 {
@@ -50,6 +51,15 @@ namespace KiraiMod.Core.Types
         {
             get => m_APIUsers.Select(info => (APIUser)info.GetValue(_Instance.Value)).FirstOrDefault(user => user is not null);
             set => SelectUser(value);
+        }
+
+        public static VRCPlayerApi SelectedPlayer
+        {
+            get => VRCPlayerApi.AllPlayers.Find(
+                UnhollowerRuntimeLib.DelegateSupport.ConvertDelegate<Il2CppSystem.Predicate<VRCPlayerApi>>(
+                    new Predicate<VRCPlayerApi>(player => player.displayName == SelectedUser.displayName)
+                )
+            );
         }
 
         // todo: bake this to a delegate
