@@ -30,7 +30,7 @@ namespace KiraiMod.Core.Types
         private static readonly PropertyInfo m_Instance = Type.GetProperties().FirstOrDefault(x => x.PropertyType == Type);
         private static readonly MethodInfo m_SelectUser = Type.GetMethods().FirstOrDefault(x => {
             ParameterInfo[] parms = x.GetParameters();
-            return parms.Length == 1 
+            return parms.Length == 1
                 && parms[0].ParameterType == typeof(APIUser);
         });
 
@@ -55,11 +55,18 @@ namespace KiraiMod.Core.Types
 
         public static VRCPlayerApi SelectedPlayer
         {
-            get => VRCPlayerApi.AllPlayers.Find(
-                UnhollowerRuntimeLib.DelegateSupport.ConvertDelegate<Il2CppSystem.Predicate<VRCPlayerApi>>(
-                    new Predicate<VRCPlayerApi>(player => player.displayName == SelectedUser.displayName)
-                )
-            );
+            get
+            {
+                APIUser selected = SelectedUser;
+                if (selected == null)
+                    return null;
+
+                return VRCPlayerApi.AllPlayers.Find(
+                    UnhollowerRuntimeLib.DelegateSupport.ConvertDelegate<Il2CppSystem.Predicate<VRCPlayerApi>>(
+                        new Predicate<VRCPlayerApi>(player => player.displayName == selected.displayName)
+                    )
+                );
+            }
         }
 
         // todo: bake this to a delegate
